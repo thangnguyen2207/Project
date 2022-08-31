@@ -11,7 +11,6 @@ import com.example.model.Account;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @ControllerAdvice
 public class GlobalController {
 	

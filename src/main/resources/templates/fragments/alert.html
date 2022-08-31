@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head></head>
+	<body>
+		<div th:fragment="deleteAlert(title, text)" id="deleteModal" class="modal" tabindex="-1">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" th:text="${title}"></h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <p th:text="${text + ' '}"></p>
+		        <p id="objText"></p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+		        <a id="deleteBtn" href="#" class="btn btn-primary">Xác nhận</a>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</body>
+</html>

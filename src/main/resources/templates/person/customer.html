@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+		<title>Khách hàng</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+		    <div class="container mt-4">
+		        <div class="card border-primary bt-5">
+		            <div class="card-header">
+		                <div class="row">
+		                    <div class="col">
+		                        <h3 class="card-title">Danh sách <small class="text-muted">khách hàng</small></h3>
+		                    </div>
+		                    <div class="col-auto">
+		                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mainModal" th:onclick="showAddModal()">
+		                        	<i class="fas fa-plus"></i> Thêm
+		                        </button>
+		                    </div>
+		                    <div class="col-auto ps-0">
+		                    	<div class="dropdown" id="drop">
+									<button class="btn btn-primary dropdown-toggle" type="button" id="menuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-list"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="listCheckBox">
+										<li layout:replace="~{fragments/menuTable-item::menuItem(2, 'ID khách hàng', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(3, 'Tên khách hàng', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(4, 'Địa chỉ', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(5, 'Số điện thoại', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(6, 'Loại', true)}"></li>
+									</ul>
+								</div>
+							</div>
+		                </div>
+		            </div>
+		            <div class="card-body">
+		                <div class="table-responsive">
+		                    <table id="mainTable" class="table table-bordered table-hover mb-0 border-primary">
+		                        <thead class="table-primary border-primary">
+		                            <tr>
+		                                <th class="text-center">#</th>
+										<th>Id</th>
+		                                <th>Họ tên</th>
+										<th>Địa chỉ</th>
+										<th>Số điện thoại</th>
+										<th>Loại</th>
+		                                <th></th>
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                            <tr th:each="item, index : ${customerList}">
+		                                <th class="text-center" th:text="${index.index + 1}"></th>
+		                                <td th:text="${item.khId}"></td>
+										<td th:text="${item.khTen}"></td>
+										<td th:text="${item.khDiaChi}"></td>
+										<td th:text="${item.khSdt}"></td>
+										<td th:text="${item.khLoai.toLowerCase() == 'ncc'} ? 'Nhà cung cấp' : 'Khách mua hàng'"></td>
+		                                <td class="text-center">
+		                                    <a class="btn btn-success" th:data-khId="${item.khId}" th:data-khTen="${item.khTen}"
+		                                    	th:data-khSdt="${item.khSdt}" th:data-khDiaChi="${item.khDiaChi}" th:data-khLoai="${item.khLoai}"
+		                                    	 th:onclick="showEditModal(this.getAttribute('data-khId'), this.getAttribute('data-khTen'), 
+		                                    	 this.getAttribute('data-khDiaChi'), this.getAttribute('data-khSdt'), this.getAttribute('data-khLoai'))">
+		                                    	<i class="fas fa-edit"></i>
+		                                    </a>
+		                                    <a class="btn btn-danger" href="#deleteModal" data-bs-toggle="modal" role="button"
+		                                    	th:data-id="${item.khId}" th:data-ten="${item.khTen}"
+		                                    	th:onclick="showDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-ten'))">
+		                                    	<i class="fas fa-trash-alt"></i>
+		                                    </a>
+		                                </td>
+		                            </tr>
+
+		                        </tbody>
+		                    </table>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		
+		    <!-- Modal -->
+		    <div class="modal fade" id="mainModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		        <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+				            <h5 class="modal-title" id="mainModalLabel">Thêm khách hàng</h5>
+				            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			            </div>
+			            <div class="modal-body">
+			                <form id="mainForm" method="post" th:action="@{/person/customer/add}" th:object="${customer}">
+			                    <div id="idField" class="row mb-3 d-none">
+			                      <label for="khId" class="col-sm-2 col-form-label">Id khách hàng</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="text" class="form-control" th:field="*{khId}" readonly="readonly">
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="khTen" class="col-sm-2 col-form-label required">Họ tên</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="text" class="form-control" placeholder="Họ tên" th:field="*{khTen}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{khTen}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row mb-3">
+			                      <label for="khDiaChi" class="col-sm-2 col-form-label">Địa chỉ</label>
+			                      <div class="col-sm">
+			                        <input type="text" class="form-control" placeholder="Địa chỉ" th:field="*{khDiaChi}">
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="khSdt" class="col-sm-2 col-form-label required">Số điện thoại</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="tel" class="form-control" placeholder="Số điện thoại" th:field="*{khSdt}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{khSdt}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row">
+			                    	<label for="khLoai" class="col-sm-2 col-form-label required">Loại</label>
+			                    	<div class="col-sm col-lg-6">
+			                    		<div class="col-form-label">
+					                        <div class="form-check form-check-inline" th:each="item : ${typeMap}">
+											  <input class="form-check-input" type="radio" name="type" th:value="${item.value}" th:field="*{khLoai}" th:errorclass="is-invalid">
+											  <label class="form-check-label" for="radMale" th:text="${item.key}"></label>
+											</div>
+											<div class="text-danger" th:if="${#fields.hasErrors('khLoai')}" th:errors="*{khLoai}" style="font-size: .875em"></div>
+										</div>
+			                    	</div>
+			                    </div>
+			                </form>
+			            </div>
+			            <div class="modal-footer">
+			            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+			            <button type="submit" form="mainForm" class="btn btn-primary">Lưu</button>
+			            </div>
+			        </div>
+		        </div>
+		    </div>
+		    
+		    <div th:replace="~{fragments/alert :: deleteAlert('Thông báo', 'Bạn có chắc chắn muốn xoá khách hàng:')}"></div>
+		    
+		    <script th:inline="javascript">
+				/*<![CDATA[*/
+				    var errorStatus = /*[[${errorStatus}]]*/ '';
+				/*]]>*/
+			</script>
+		    <script type="text/javascript">
+		    	var addAction = "/person/customer/add";
+		    	var updateAction = "/person/customer/update";
+		    	
+		    	var addTitle = "Thêm khách hàng";
+		    	var updateTitle = "Sửa thông tin khách hàng";
+		    
+		    	function showAddModal() {
+		    		$('#mainForm').attr("action", addAction);
+		    		$('#idField').addClass('d-none');
+		    		$('#khId').val("");
+			    	$('#khTen').val("");
+			    	$('#khDiaChi').val("");
+			    	$('#khLoai1').prop("checked", false);
+			    	$('#khLoai2').prop("checked", false);
+			    	$('#khSdt').val("");
+		    		
+		    		$('#mainModalLabel').text(addTitle);
+		    	}
+		    	
+			    function showEditModal(khId, khTen, khDiaChi, khSdt, khLoai) {
+			    	$('#mainForm').attr("action", updateAction);
+			    	$('#idField').removeClass('d-none');
+			    	$('#khId').val(khId);
+			    	$('#khTen').val(khTen);
+			    	khLoai.toLowerCase() == 'ncc' ? $('#khLoai1').prop("checked", true) : $('#khLoai2').prop("checked", true);
+			    	$('#khDiaChi').val(khDiaChi);
+			    	$('#khSdt').val(khSdt);
+			    	
+			        $('#mainModalLabel').text(updateTitle);
+			        $('#mainModal').modal('show');
+			    }
+			    
+			    function showDeleteModal(id, ten) {
+			    	$('#objText').text(id + " - " + ten + "?");
+			    	$('#deleteBtn').attr("href", "/person/customer/delete/" + id)
+			    }
+			</script>
+	    </div>
+	</body>
+</html>

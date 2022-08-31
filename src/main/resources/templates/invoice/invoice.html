@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+		<title>Hoá đơn</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+		    <div class="container mt-4">
+		        <div class="card border-primary bt-5">
+		            <div class="card-header">
+		                <div class="row">
+		                    <div class="col">
+		                        <h3 class="card-title">Danh sách <small class="text-muted">hoá đơn</small></h3>
+		                    </div>
+		                    <div class="col-auto">
+		                    <!--
+		                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mainModal" th:onclick="showAddModal()">
+		                        	<i class="fas fa-plus"></i> Thêm
+		                        </button>
+		                    -->
+		                    	<a href="/invoice/add" class="btn btn-primary"><i class="fas fa-plus"></i> Thêm</a>
+		                    </div>
+		                    <div class="col-auto ps-0">
+		                    	<div class="dropdown" id="drop">
+									<button class="btn btn-primary dropdown-toggle" type="button" id="menuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-list"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="listCheckBox">
+										<li layout:replace="~{fragments/menuTable-item::menuItem(2, 'ID hoá đơn', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(3, 'Ngày ghi', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(4, 'Loại', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(5, 'Khách hàng', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(6, 'Nhân viên', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(7, 'Chi tiết', true)}"></li>
+									</ul>
+								</div>
+							</div>
+		                </div>
+		            </div>
+		            <div class="card-body">
+		                <div class="table-responsive">
+		                    <table id="mainTable" class="table table-bordered table-hover mb-0 border-primary">
+		                        <thead class="table-primary border-primary">
+		                            <tr>
+		                                <th class="text-center">#</th>
+										<th>Id</th>
+		                                <th>Ngày ghi</th>
+										<th>Loại</th>
+										<th>Tên khách hàng</th>
+										<th>Tên nhân viên</th>
+										<th>Chi tiết</th>
+		                                <th></th>
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                            <tr th:each="item, index : ${invoiceList}">
+		                                <th class="text-center" th:text="${index.index + 1}"></th>
+		                                <td th:text="${item.hdId}"></td>
+										<td th:text="${#dates.format(item.hdNgay, 'dd/MM/YYYY')}"></td>
+										<td th:text="${item.hdLoai.toLowerCase() == 'n' ? 'Nhập' : 'Xuất'}"></td>
+										<td th:text="${item.customer != null ? item.customer.khTen : ''}"></td>
+										<td th:text="${item.staff != null ? item.staff.nvTen : ''}"></td>
+										<td class="text-center">
+											<a th:href="@{'/invoice/detail/'+${item.hdId}}" class="btn btn-primary">Xem</a>
+										</td>
+		                                <td class="text-center">
+		                                    <a class="btn btn-success" th:data-hdId="${item.hdId}" th:data-hdNgay="${item.hdNgay}" th:data-hdLoai="${item.hdLoai}"
+		                                    	th:data-khId="${item.customer != null ? item.customer.khId : ''}" th:data-nvId="${item.staff != null ? item.staff.nvId : ''}"
+		                                    	 th:onclick="showEditModal(this.getAttribute('data-hdId'), this.getAttribute('data-hdNgay'),
+		                                    	 	this.getAttribute('data-hdLoai'), this.getAttribute('data-khId'), this.getAttribute('data-nvId'))">
+		                                    	<i class="fas fa-edit"></i>
+		                                    </a>
+		                                    <a class="btn btn-danger" href="#deleteModal" data-bs-toggle="modal" role="button"
+		                                    	th:data-id="${item.hdId}"
+		                                    	th:onclick="showDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-ten'))">
+		                                    	<i class="fas fa-trash-alt"></i>
+		                                    </a>
+		                                </td>
+		                            </tr>
+
+		                        </tbody>
+		                    </table>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		
+		    <!-- Modal -->
+		    <div class="modal fade" id="mainModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		        <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+				            <h5 class="modal-title" id="mainModalLabel">Thêm hoá đơn</h5>
+				            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				            </button>
+			            </div>
+			            <div class="modal-body">
+			                <form id="mainForm" method="post" th:action="@{/invoice/add}" th:object="${invoice}">
+			                    <div id="idField" class="row mb-3 d-none">
+			                      <label for="hdId" class="col-sm-2 col-form-label">Id hoá đơn</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="text" class="form-control" th:field="*{hdId}" readonly="readonly">
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="nvTen" class="col-sm-2 col-form-label required">Ngày hoá đơn</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="date" class="form-control" placeholder="Ngày hoá đơn" th:field="*{hdNgay}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{hdNgay}"></div>
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="Nam" class="col-sm-2 col-form-label required">Loại</label>
+			                      <div class="col-sm">
+									<div class="col-form-label">
+				                        <div class="form-check form-check-inline" th:each="item : ${invoiceTypeMap}">
+										  <input class="form-check-input" type="radio" th:value="${item.value}" th:field="*{hdLoai}" th:errorclass="is-invalid">
+										  <label class="form-check-label" th:text="${item.key}"></label>
+										</div>
+										<div class="text-danger" th:if="${#fields.hasErrors('hdLoai')}" th:errors="*{hdLoai}" style="font-size: .875em"></div>
+									</div>
+			                      </div>
+			                    </div>
+			                    <div class="row mb-3">
+			                    	<label for="txtPosition" class="col-sm-2 col-form-label">Tên KH</label>
+			                    	<div class="col-sm col-lg-6">
+			                    		<select class="form-control selectpicker" data-live-search="true" th:field="*{customer.khId}" th:errorclass="is-invalid" data-placeholder="Nhập từ khoá...">
+			                    			<option th:each="item: ${customers}" th:value="${item.khId}" th:text="${item.khTen}">
+			                    		</select>
+			                    		<div class="invalid-feedback" th:errors="*{customer.khId}"></div>
+			                    	</div>
+			                    </div>
+			                    <div class="row mb-3">
+			                    	<label for="txtPosition" class="col-sm-2 col-form-label">Tên nhân viên</label>
+			                    	<div class="col-sm col-lg-6">
+			                    		<select class="form-control selectpicker" data-live-search="true" th:field="*{staff.nvId}" th:errorclass="is-invalid" data-placeholder="Nhập từ khoá...">
+			                    			<option th:each="item: ${staffs}" th:value="${item.nvId}" th:text="${item.nvTen}">
+			                    		</select>
+			                    		<div class="invalid-feedback" th:errors="*{staff.nvId}"></div>
+			                    	</div>
+			                    </div>
+			                </form>
+			            </div>
+			            <div class="modal-footer">
+			            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+			            <button type="submit" form="mainForm" class="btn btn-primary">Lưu</button>
+			            </div>
+			        </div>
+		        </div>
+		    </div>
+		    
+		    <div th:replace="~{fragments/alert :: deleteAlert('Thông báo', 'Bạn có chắc chắn muốn xoá hoá đơn:')}"></div>
+		    
+		    <script th:inline="javascript">
+				/*<![CDATA[*/
+				    var errorStatus = /*[[${errorStatus}]]*/ '';
+				/*]]>*/
+			</script>
+		    <script type="text/javascript">
+		     	var addAction = "/invoice/add";
+		     	var updateAction = "/invoice/update";
+		     	
+		     	var addTitle = "Thêm hoá đơn";
+		     	var updateTitle = "Sửa thông tin hoá đơn";
+		    
+		    	function showAddModal() {
+		    		$('#mainForm').attr("action", addAction);
+		    		$("#idField").addClass("d-none");
+		    		$('#hdId').val("");
+			    	$('#hdNgay').val("");
+			    	$('#hdLoai1').prop("checked", false);
+			    	$('#hdLoai2').prop("checked", false);
+			    	$('#customer\\.khId').selectpicker('val', '');
+			    	$('#staff\\.nvId').selectpicker('val', '');
+		    		
+		    		$('#mainModalLabel').text(addTitle);
+		    	}
+		    	
+			    function showEditModal(hdId, hdNgay, hdLoai, khId, nvId) {
+			    	$('#mainForm').attr("action", updateAction);
+			    	$('#hdId').val(hdId);
+			    	$("#idField").removeClass("d-none");
+			    	$('#hdNgay').val(hdNgay);
+			    	hdLoai.toLowerCase() == 'n' ? $('#hdLoai1').prop("checked", true) : $('#hdLoai2').prop("checked", true);
+			    	$('#customer\\.khId').selectpicker('val', khId);
+			    	$('#staff\\.nvId').selectpicker('val', nvId);
+			    	
+			        $('#mainModalLabel').text(updateTitle);
+			        $('#mainModal').modal('show');
+			    }
+			    
+			    function showDeleteModal(id) {
+			    	$('#objText').text(id + "?");
+			    	$('#deleteBtn').attr("href", "/invoice/delete/" + id)
+			    }
+			</script>
+	    </div>
+	</body>
+</html>

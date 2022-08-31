@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+		<title>Nhân viên</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+		    <div class="container mt-4">
+				<div class="card border-primary bt-5">
+					<div class="card-header">
+				    	<div class="row">
+				        	<div class="col">
+				            	<h3 class="card-title">Danh sách <small class="text-muted">nhân viên</small></h3>
+				            </div>
+				            <div class="col-auto">
+				            	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mainModal" th:onclick="showAddModal()">
+				                	<i class="fas fa-plus"></i> Thêm
+				            	</button>
+				            </div>
+				            <div class="col-auto ps-0">
+				            	<div class="dropdown" id="drop">
+									<button class="btn btn-primary dropdown-toggle" type="button" id="menuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-list"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="listCheckBox">
+										<li layout:replace="~{fragments/menuTable-item::menuItem(2, 'ID nhân viên', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(3, 'Tên nhân viên', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(4, 'Giới tính', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(5, 'Số điện thoại', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(6, 'Email', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(7, 'Chức vụ', true)}"></li>
+									</ul>
+								</div>
+							</div>
+				       	</div>
+				    </div>
+				    <div class="card-body">
+				    	<div class="table-responsive">
+				        	<table id="mainTable" class="table table-bordered table-hover mb-0 border-primary">
+				            	<thead class="table-primary border-primary">
+				                	<tr>
+				                    	<th class="text-center">#</th>
+										<th>Id</th>
+				                        <th>Họ tên</th>
+										<th>Giới tính</th>
+										<th>Số điện thoại</th>
+										<th>Email</th>
+										<th>Chức vụ</th>
+				                        <th></th>
+				                   </tr>
+				               </thead>
+				               <tbody>
+				               		<tr th:each="item, index : ${staffList}">
+				                    	<th class="text-center" th:text="${index.index + 1}"></th>
+				                        <td th:text="${item.nvId}"></td>
+										<td th:text="${item.nvTen}"></td>
+										<td class="text-center" th:text="${item.nvGioiTinh == '1'} ? 'Nam' : 'Nữ'"></td>
+										<td th:text="${item.nvSdt}"></td>
+										<td th:text="${item.nvEmail}"></td>
+										<td th:text="${item.positions.cvTen}"></td>
+				                        <td class="text-center">
+				                        	<a class="btn btn-success" th:data-nvId="${item.nvId}" th:data-cvId="${item.positions.cvId}" th:data-nvTen="${item.nvTen}"
+				                            	th:data-nvGioiTinh="${item.nvGioiTinh}" th:data-nvSdt="${item.nvSdt}" th:data-nvEmail="${item.nvEmail}"
+				                                th:onclick="showEditModal(this.getAttribute('data-nvId'), this.getAttribute('data-cvId'),
+				                                	this.getAttribute('data-nvTen'), this.getAttribute('data-nvGioiTinh'), this.getAttribute('data-nvEmail'),
+				                                   	this.getAttribute('data-nvSdt'))">
+				                                	<i class="fas fa-edit"></i>
+				                            </a>
+				                        	<a class="btn btn-danger" href="#deleteModal" data-bs-toggle="modal" role="button"
+				                        		th:data-id="${item.nvId}" th:data-ten="${item.nvTen}"
+		                                    	th:onclick="showDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-ten'))">
+				                        		<i class="fas fa-trash-alt"></i>
+				                        	</a>
+				                    	</td>
+				                	</tr>
+				            	</tbody>
+				        	</table>
+				    	</div>
+					</div>
+				</div>
+		    </div>
+		
+		    <!-- Modal -->
+		    <div class="modal fade" id="mainModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		        <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+				            <h5 class="modal-title" id="mainModalLabel">Thêm nhân viên</h5>
+				            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				            </button>
+			            </div>
+			            <div class="modal-body">
+			                <form id="mainForm" method="post" th:action="@{/person/staff/add}" th:object="${staff}">
+			                    <div id="idField" class="row mb-3 d-none">
+			                      <label for="nvId" class="col-sm-2 col-form-label">Id nhân viên</label>
+			                      <div class="col-sm col-lg-5">
+			                      	<input type="text" class="form-control" th:field="*{nvId}" readonly="readonly">
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="nvTen" class="col-sm-2 col-form-label required">Họ tên</label>
+			                      <div class="col-sm col-lg-7">
+			                        <input type="text" class="form-control" placeholder="Họ tên" th:field="*{nvTen}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{nvTen}"></div>
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="Nam" class="col-sm-2 col-form-label required">Giới tính</label>
+			                      <div class="col-sm">
+									<div class="col-form-label">
+				                        <div class="form-check form-check-inline" th:each="item : ${genderMap}">
+										  <input class="form-check-input" type="radio" name="Gender" th:value="${item.value}" th:field="*{nvGioiTinh}" th:errorclass="is-invalid">
+										  <label class="form-check-label" for="radMale" th:text="${item.key}"></label>
+										</div>
+										<div class="text-danger" th:if="${#fields.hasErrors('nvGioiTinh')}" th:errors="*{nvGioiTinh}" style="font-size: .875em"></div>
+									</div>
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="nvSdt" class="col-sm-2 col-form-label required">Số điện thoại</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="tel" class="form-control" placeholder="Số điện thoại" th:field="*{nvSdt}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{nvSdt}"></div>
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="nvEmail" class="col-sm-2 col-form-label required">Email</label>
+			                      <div class="col-sm col-lg-6">
+			                        <input type="email" class="form-control" placeholder="Email" th:field="*{nvEmail}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{nvEmail}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row">
+			                    	<label for="txtPosition" class="col-sm-2 col-form-label required">Chức vụ</label>
+			                    	<div class="col-sm col-lg-5">
+			                    		<select class="form-select" th:field="*{positions.cvId}" th:errorclass="is-invalid">
+			                    			<option th:each="item, iter: ${positionss}" th:value="${item.cvId}" th:text="${item.cvTen}"></option>
+			                    		</select>
+			                    		<div class="text-danger" th:if="${#fields.hasErrors('positions')}" th:errors="*{positions}"></div>
+			                    	</div>
+			                    </div>
+			                </form>
+			            </div>
+			            <div class="modal-footer">
+			            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+			            <button type="submit" form="mainForm" class="btn btn-primary">Lưu</button>
+			            </div>
+			        </div>
+		        </div>
+		    </div>
+		    
+		    <div th:replace="~{fragments/alert :: deleteAlert('Thông báo', 'Bạn có chắc chắn muốn xoá nhân viên:')}"></div>
+		    
+		    <script th:inline="javascript">
+				/*<![CDATA[*/
+				    var errorStatus = /*[[${errorStatus}]]*/ '';
+				/*]]>*/
+			</script>
+		    <script type="text/javascript">
+		    	var addAction = "/person/staff/add";
+		    	var updateAction = "/person/staff/update";
+		    	
+		    	var addTitle = "Thêm nhân viên";
+		    	var updateTitle = "Sửa thông tin nhân viên";
+		    
+		    	function showAddModal() {
+		    		$('#mainForm').attr("action", addAction);
+		    		$("#idField").addClass("d-none");
+		    		$('#nvId').val("");
+			    	$('#positions\\.cvId').val("");
+			    	$('#nvTen').val("");
+			    	$('#nvGioiTinh1').prop("checked", false);
+			    	$('#nvGioiTinh2').prop("checked", false);
+			    	$('#nvEmail').val("");
+			    	$('#nvSdt').val("");
+		    		
+		    		$('#mainModalLabel').text(addTitle);
+		    	}
+		    	
+			    function showEditModal(nvId, cvId, nvTen, nvGioiTinh, nvEmail, nvSdt) {
+			    	$('#mainForm').attr("action", updateAction);
+			    	$('#nvId').val(nvId);
+			    	$("#idField").removeClass("d-none");
+			    	$('#positions\\.cvId').val(cvId);
+			    	$('#nvTen').val(nvTen);
+			    	nvGioiTinh == '1' ? $('#nvGioiTinh1').prop("checked", true) : $('#nvGioiTinh2').prop("checked", true);
+			    	$('#nvEmail').val(nvEmail);
+			    	$('#nvSdt').val(nvSdt);
+			    	
+			        $('#mainModalLabel').text(updateTitle);
+			        $('#mainModal').modal('show');
+			    }
+			    
+			    function showDeleteModal(id, ten) {
+			    	$('#objText').text(id + " - " + ten + "?");
+			    	$('#deleteBtn').attr("href", "/person/staff/delete/" + id)
+			    }
+			</script>
+	    </div>
+	</body>
+</html>

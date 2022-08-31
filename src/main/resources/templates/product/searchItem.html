@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head></head>
+	<body>
+		<ul th:fragmemt="item" th:remove="tag">
+			<li th:each="item, iter : ${products}">
+				<a class="dropdown-item" href="#">
+					<div class="row py-1">
+						<div class="col-3">
+							<img alt="img1" src="/images/hinh-anh-hoat-hinh-de-thuong-1.jpg" height=55px>
+						</div>
+						<div class="col">
+							<p class="my-0">
+								<strong th:text="${item.hhTen}"></strong> 
+								<small class="text-muted ps-2" th:text="${item.hhId}"></small>
+							</p>
+							<span th:text="${'Giá: ' + item.hhDonGia}"></span>
+							<small class="text-muted ps-3" th:text="${'Tồn: ' + item.hhSoLuongTon}"></small>
+						</div>
+					</div>
+				</a>
+			</li>
+		</ul>
+	</body>
+</html>

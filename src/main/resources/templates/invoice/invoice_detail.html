@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+		<title>Hoá đơn chi tiết</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+		    <div class="container mt-4">
+		    	<div class="row">
+		    		<div class="col-lg-8">
+		    			<div class="card border-primary bt-5">
+				            <div class="card-header">
+				            	<div class="row">
+				            		<div class="col-md-7">
+				            			<div class="input-group">
+				            				<span class="input-group-text">
+				            					<i class="fas fa-search"></i>
+				            				</span>
+				            				<input id="input-search" class="form-control" type="text" placeholder="Tìm mặt hàng">
+				            			</div>
+						                <div class="dropdown">
+										  <button class="btn btn-secondary dropdown-toggle d-none" type="button" id="searchBtn" data-bs-toggle="dropdown" aria-expanded="false">
+										    Dropdown button
+										  </button>
+										  <ul id="search-dropdown" class="dropdown-menu w-100 mt-1" aria-labelledby="searchBtn">
+										   
+										  </ul>
+										</div>
+				            		</div>
+				            	</div>  
+				            </div>
+				            <div class="card-body table-responsive">
+				                <table class="table">
+				                	<thead>
+				                		<tr>
+				                			<th></th>
+				                			<th>Id</th>
+				                			<th style="width: 40%">Tên hàng</th>
+				                			<th>Số lượng</th>
+				                			<th>Giá bán</th>
+				                			<th>Tổng</th>
+				                		</tr>
+				                	</thead>
+				                	<tbody>
+				                		<tr>
+				                			<td><a>
+				                				<i class="fas fa-edit"></i>
+				                			</a></td>
+				                			<td>HD00001</td>
+				                			<td>Hạt hướng dương</td>
+				                			<td><input type="number" class="form-control" placeholder="Nhập số lượng" value=1></td>
+				                			<td><input type="number" class="form-control" placeholder="Nhập số lượng" value=1></td>
+				                			<td>100000</td>
+				                		</tr>
+				                	</tbody>
+				                </table>
+				            </div>
+				        </div>
+		    		</div>
+		    		<div class="col-lg">
+		    			<div class="border rounded p-3 pb-0 mb-3">
+				    		<h3>Thông tin hoá đơn</h3>
+				    		<table class="table table-borderless" th:object="${invoice}">
+				    			<tbody>
+				    				<tr>
+				    					<th style="width: 40%">Id</th>
+				    					<td th:text="*{hdId}"></td>
+				    				</tr>
+				    				<tr>
+				    					<th>Ngày ghi</th>
+				    					<td th:text="*{#dates.format(hdNgay, 'dd/MM/YYYY')}"></td>
+				    				</tr>
+				    				<tr>
+				    					<th>Loại</th>
+				    					<td th:text="*{hdLoai.toLowerCase() == 'n' ? 'Nhập' : 'Xuất'}"></td>
+				    				</tr>
+				    				<tr>
+				    					<th>Tên khách hàng</th>
+				    					<td th:text="*{customer != null ? customer.khTen : ''}"></td>
+				    				</tr>
+				    				<tr>
+				    					<th>Tên nhân viên</th>
+				    					<td th:text="*{staff != null ? staff.nvTen : ''}"></td>
+				    				</tr>
+				    				<tr>
+				    					<th>Tổng tiền</th>
+				    					<td th:text="${#numbers.formatDecimal(total, 1, 'POINT', 0, 'COMMA') + ' VND'}"></td>
+				    				</tr>
+				    			</tbody>
+				    		</table>
+				    		<button class="btn btn-primary mt-auto">Thanh toán</button>
+			    		</div>
+		    		</div>
+		    	</div>
+		    </div>
+		    
+		    <script type="text/javascript">			    
+			    document.getElementById('input-search').addEventListener('input', function () {
+			    	$('.dropdown-menu').addClass('show');
+			    	findProduct($("#input-search").val(), 8);
+			    });
+			    document.getElementById('input-search').addEventListener('blur', function () {
+			    	setTimeout(function () {
+			    		$('.dropdown-menu').removeClass('show');
+			    	}, 50);
+			    });
+			</script>
+	    </div>
+	</body>
+</html>

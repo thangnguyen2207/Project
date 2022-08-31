@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head>
+	</head>
+	<body>
+		<div layout:fragment="toast">
+			<div id="addToast" class="toast text-success end-0 position-fixed me-4" role="alert" 
+				aria-live="assertive" aria-atomic="true" style="z-index: 11; top: 30px; background-color: #d1e7dd">
+				<div class="d-flex">
+			    	<div class="toast-body fw-bold fs-6">
+			      		Dữ liệu được thêm vào thành công.
+			    	</div>
+			  	</div>
+			</div>
+			
+			<div id="updateToast" class="toast text-success end-0 position-fixed me-4" role="alert" 
+				aria-live="assertive" aria-atomic="true" style="z-index: 11; top: 30px; background-color: #d1e7dd">
+				<div class="d-flex">
+			    	<div class="toast-body fw-bold fs-6">
+			      		Dữ liệu đã cập nhật thành công.
+			    	</div>
+			  	</div>
+			</div>
+			
+			<div id="deleteToast" class="toast text-danger position-fixed end-0 me-4" role="alert" 
+				aria-live="assertive" aria-atomic="true" style="z-index: 11; top: 30px; background-color: #f8d7da">
+				<div class="d-flex">
+			    	<div class="toast-body fw-bold fs-6">
+			      		Dữ liệu đã xoá thành công.
+			    	</div>
+			  	</div>
+			</div>
+		</div>
+	</body>
+</html>

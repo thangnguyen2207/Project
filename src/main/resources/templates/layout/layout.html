@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		lang="vi">
+	<head>
+	
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Read CSS -->
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+		<link rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.min.css}">
+		<link rel="stylesheet" th:href="@{/webjars/datatables/css/dataTables.bootstrap5.min.css}">
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap-select/css/bootstrap-select.min.css}">
+		<link rel="shortcut icon" th:href="@{/images/bill.png}">
+		<style>
+			.required:after {
+				content: "*";
+				color: red;
+			}
+			
+			.bootstrap-select .dropdown-toggle:focus {
+				outline: none!important;	
+			}
+			
+			.btn-light:focus {
+				box-shadow: 0 0 0 0.25rem rgb(49 132 253 / 50%);
+			}
+			
+			input[type="number"] {
+			  -webkit-appearance: textfield;
+			     -moz-appearance: textfield;
+			          appearance: textfield;
+			}
+			input[type=number]::-webkit-inner-spin-button, 
+			input[type=number]::-webkit-outer-spin-button { 
+			  -webkit-appearance: none;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Header -->
+		<header>
+			<nav layout:replace="~{layout/header::header}"></nav>
+		</header>
+		
+		<!-- Content -->
+		<section>
+			<div layout:fragment="content"></div>
+		</section>
+		
+		<!-- Loading Screen -->
+		<div layout:replace="~{layout/loader::loader}"></div>
+		
+		<!-- Toast -->
+		<div layout:replace="~{fragments/toast::toast}"></div>
+		
+		<!-- Read JS -->
+		<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+		<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+		<script th:src="@{/webjars/datatables/js/jquery.dataTables.min.js}"></script>
+		<script th:src="@{/webjars/datatables/js/dataTables.bootstrap5.min.js}"></script>
+		<script th:src="@{/webjars/bootstrap-select/js/bootstrap-select.min.js}"></script>
+		<script th:src="@{/webjars/bootstrap-select/js/i18n/defaults-vi_VN.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/dataTables.js}"></script>
+		<script type="text/javascript" th:src="@{/js/menuTables.js}"></script>
+		<script type="text/javascript" th:src="@{/js/modalErrorHandler.js}"></script>
+		<script type="text/javascript" th:src="@{/js/product.js}"></script>
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+				var showToast = /*[[${showToast}]]*/ '';
+			/*]]>*/
+			$('.selectpicker').selectpicker('setStyle', 'border', 'add');
+		</script>
+		<!-- Need 'showToast' thymeleaf variable -->
+		<script type="text/javascript" th:src="@{/js/layout.js}"></script>
+	</body>
+</html>

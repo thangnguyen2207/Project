@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+	</head>
+	<body>
+		<div id="loadingScreen" class="position-fixed top-0 bottom-0 start-0 end-0 text-center" 
+			layout:fragment="loader" style="background-color: #80808066;">
+			<div class="spinner-border text-primary" role="status" style="margin-top: 50vh; width: 3em; height: 3em;">
+			  <span class="visually-hidden">Loading...</span>
+			</div>
+		</div>
+	</body>
+</html>

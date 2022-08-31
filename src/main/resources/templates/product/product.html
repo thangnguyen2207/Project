@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+	<head>
+		<title>Hàng hoá</title>
+		
+		<style type="text/css">
+			td:nth-child(8), th:nth-child(8) {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div layout:fragment="content">
+		    <div class="container mt-4">
+		    	<div class="row">
+		    		<div class="col-12 col-md-6 col-lg-4">
+		    			<div class="p-2 mb-3 border border-primary rounded">
+				    		<div class="row">
+				    			<div class="col-10">
+				    				<h5>Nhóm hàng</h5>
+				    			</div>
+				    			<div class="col-2 text-end">
+					    			<a class="border px-1 rounded rounded-circle" data-bs-toggle="modal" data-bs-target="#proGroupModal">
+						    			<i class="fas fa-plus"></i>
+						    		</a>
+						    		
+						    		<!-- Modal -->
+								    <div class="modal fade" id="proGroupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								        <div class="modal-dialog">
+									        <div class="modal-content">
+									            <div class="modal-header">
+										            <h5 class="modal-title">Thêm nhóm hàng</h5>
+										            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+										            </button>
+									            </div>
+									            <div class="modal-body">
+									                <form id="productForm" method="post" th:action="@{/product-group/add}" th:object="${productGroup}">
+														<div class="row mb-3">
+									                      <label for="nhTen" class="col-sm-4 col-form-label required">Tên nhóm hàng</label>
+									                      <div class="col-sm col-lg-7">
+									                        <input type="text" class="form-control" placeholder="Tên nhóm hàng" th:field="*{nhTen}" th:errorclass="is-invalid">
+									                        <div class="invalid-feedback text-start">Trường này là bắt buộc</div>
+									                      </div>
+									                    </div>
+									                </form>
+									            </div>
+									            <div class="modal-footer">
+									            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+									            <button type="submit" form="productForm" class="btn btn-primary">Lưu</button>
+									            </div>
+									        </div>
+								        </div>
+								    </div>
+				    			</div>
+				    		</div>
+				    		<hr class="my-2">
+				    		<form th:action="@{/product-group/delete}" method="post">
+					    		<select class="form-control selectpicker w-75" id="groupIds" name="groupIds" data-placeholder="Chọn nhóm hàng..." multiple="multiple">
+					    			<option th:each="item: ${productGroupList}" th:value="${item.nhId}" th:text="${item.nhTen}" th:title="@{/images/bill.png}">
+					    		</select>
+						    	<button type="submit" class="btn btn-danger d-inline-block">
+						    		<i class="fas fa-trash-alt"></i>
+						    	</button>
+				    		</form>
+				    	</div>
+		    		</div>
+		    	</div>
+		        <div class="card border-primary bt-5">
+		            <div class="card-header">
+		                <div class="row">
+		                    <div class="col">
+		                        <h3 class="card-title">Danh sách <small class="text-muted">hàng hoá</small></h3>
+		                    </div>
+		                    <div class="col-auto">
+		                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mainModal" th:onclick="showAddModal()">
+		                        	<i class="fas fa-plus"></i> Thêm
+		                        </button>
+		                    </div>
+		                    <div class="col-auto ps-0">
+		                    	<div class="dropdown" id="drop">
+									<button class="btn btn-primary dropdown-toggle" type="button" id="menuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-list"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="listCheckBox">
+										<li layout:replace="~{fragments/menuTable-item::menuItem(2, 'ID hàng hoá', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(3, 'Tên hàng hoá', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(4, 'Nhóm hàng', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(5, 'Đơn vị tính', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(6, 'Số lượng tồn', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(7, 'Đơn giá', true)}"></li>
+									    <li layout:replace="~{fragments/menuTable-item::menuItem(8, 'Mô tả', false)}"></li>
+									</ul>
+								</div>
+							</div>
+		                </div>
+		            </div>
+		            <div class="card-body">
+		                <div class="table-responsive">
+		                    <table id="mainTable" class="table table-bordered table-hover mb-0 border-primary">
+		                        <thead class="table-primary border-primary">
+		                            <tr>
+		                                <th class="text-center">#</th>
+										<th>Id</th>
+		                                <th>Tên hàng</th>
+										<th>Nhóm hàng</th>
+										<th>Đơn vị tính</th>
+										<th>Số lượng tồn</th>
+										<th>Đơn giá</th>
+										<th>Mô tả</th>
+		                                <th></th>
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                            <tr th:each="item, index : ${productList}">
+		                                <th class="text-center" th:text="${index.index + 1}"></th>
+		                                <td th:text="${item.hhId}"></td>
+										<td th:text="${item.hhTen}"></td>
+										<td th:text="${item.productGroup.nhTen}"></td>
+										<td th:text="${item.hhDonViTinh}"></td>
+										<td th:text="${item.hhSoLuongTon}"></td>
+										<td th:text="${item.hhDonGia}"></td>
+										<td th:text="${item.hhMoTa}"></td>
+		                                <td class="text-center">
+		                                    <a class="btn btn-success" th:data-hhId="${item.hhId}" th:data-nhId="${item.productGroup.nhId}" th:data-hhTen="${item.hhTen}"
+		                                    	th:data-hhDonViTinh="${item.hhDonViTinh}" th:data-hhSoLuongTon="${item.hhSoLuongTon}"
+		                                    	th:data-hhDonGia="${item.hhDonGia}" th:data-hhMoTa="${item.hhMoTa}"
+		                                    	th:onclick="showEditModal(this.getAttribute('data-hhId'), this.getAttribute('data-nhId'),
+		                                    	 	this.getAttribute('data-hhTen'), this.getAttribute('data-hhDonViTinh'),
+		                                    	 	this.getAttribute('data-hhDonGia'), this.getAttribute('data-hhMoTa'))">
+		                                    	<i class="fas fa-edit"></i>
+		                                    </a>
+		                                    <a class="btn btn-danger" href="#deleteModal" data-bs-toggle="modal" role="button"
+		                                    	th:data-id="${item.hhId}" th:data-ten="${item.hhTen}"
+		                                    	th:onclick="showDeleteModal(this.getAttribute('data-id'), this.getAttribute('data-ten'))">
+		                                    	<i class="fas fa-trash-alt"></i>
+		                                    </a>
+		                                </td>
+		                            </tr>
+
+		                        </tbody>
+		                    </table>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		
+		    <!-- Modal -->
+		    <div class="modal fade" id="mainModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		        <div class="modal-dialog modal-lg">
+			        <div class="modal-content">
+			            <div class="modal-header">
+				            <h5 class="modal-title" id="mainModalLabel">Thêm hàng hoá</h5>
+				            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				            </button>
+			            </div>
+			            <div class="modal-body">
+			                <form id="mainForm" method="post" th:action="@{/product/add}" th:object="${product}">
+								<div id="idField" class="row mb-3 d-none">
+			                      <label for="hhId" class="col-sm-2 col-form-label">Id hàng hoá</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="text" class="form-control" th:field="*{hhId}" readonly="readonly">
+			                      </div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="hhTen" class="col-sm-2 col-form-label required">Tên hàng</label>
+			                      <div class="col-sm col-lg-6">
+			                        <input type="text" class="form-control" placeholder="Tên hàng" th:field="*{hhTen}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{hhTen}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row mb-3">
+			                    	<label for="productGroup.nhId" class="col-sm-2 col-form-label required">Nhóm hàng</label>
+			                    	<div class="col-sm col-lg-5">
+			                    		<div class="input-group">
+			                    			<select class="form-control selectpicker" data-placeholder="Chọn nhóm hảng..." th:field="*{productGroup.nhId}" th:errorclass="is-invalid">
+			                    				<option th:each="item, iter: ${productGroupList}" th:value="${item.nhId}" th:text="${item.nhTen}"></option>
+			                    			</select>
+			                    			<div class="text-danger" th:if="${#fields.hasErrors('productGroup.nhId')}" th:errors="*{productGroup.nhId}"></div>
+			                    		</div>
+			                    	</div>
+			                    </div>
+								<div class="row mb-3">
+			                      <label for="hhDonViTinh" class="col-sm-2 col-form-label required">Đơn vị tính</label>
+			                      <div class="col-sm col-lg-5">
+			                        <input type="text" class="form-control" placeholder="Đơn vị tính" th:field="*{hhDonViTinh}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{hhDonViTinh}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row mb-3">
+			                      <label for="hhDongia" class="col-sm-2 col-form-label required">Đơn giá</label>
+			                      <div class="col-sm col-lg-4">
+			                        <input type="number" class="form-control" placeholder="Đơn giá" th:field="*{hhDonGia}" th:errorclass="is-invalid">
+			                        <div class="invalid-feedback" th:errors="*{hhDonGia}"></div>
+			                      </div>
+			                    </div>
+			                    <div class="row">
+			                      <label for="hhMoTa" class="col-sm-2 col-form-label">Mô tả</label>
+			                      <div class="col-sm">
+			                        <textarea class="form-control" placeholder="Mô tả" th:field="*{hhMoTa}"></textarea>
+			                      </div>
+			                    </div>
+			                </form>
+			            </div>
+			            <div class="modal-footer">
+			            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+			            <button type="submit" form="mainForm" class="btn btn-primary">Lưu</button>
+			            </div>
+			        </div>
+		        </div>
+		    </div>
+		    
+		    <div th:replace="~{fragments/alert :: deleteAlert('Thông báo', 'Bạn có chắc chắn muốn xoá sản phẩm:')}"></div>
+		    
+		    <script th:inline="javascript">
+				/*<![CDATA[*/
+					var errorStatus = /*[[${errorStatus}]]*/ '';
+				/*]]>*/
+				
+				window.onload = function () {
+					let url = new URL(window.location.href);
+					let proGroupError = url.searchParams.get("proGroupError");
+					if (proGroupError != null) {
+						$('#proGroupModal').modal('show');
+						$('#nhTen').addClass('is-invalid');
+					}
+				}
+			</script>
+		    <script type="text/javascript">
+		    	var addAction = "/product/add";
+		    	var updateAction = "/product/update";
+		    	
+		    	var addTitle = "Thêm hàng hoá";
+		    	var updateTitle = "Sửa thông tin hàng hoá";
+		    
+		    	function showAddModal() {
+		    		$('#mainForm').attr("action", addAction);
+		    		$("#idField").addClass("d-none");
+		    		$('#hhId').val("");
+			    	$('#productGroup\\.nhId').selectpicker('val', '');
+			    	$('#hhTen').val("");
+			    	$('#hhDonViTinh').val("");
+			    	$('#hhDonGia').val(0);
+			    	$('#hhMoTa').text("");
+		    		
+		    		$('#mainModalLabel').text(addTitle);
+		    	}
+		    	
+			    function showEditModal(hhId, nhId, hhTen, hhDonViTinh, hhDonGia, hhMoTa) {
+			    	$('#mainForm').attr("action", updateAction);
+			    	$('#hhId').val(hhId);
+			    	$("#idField").removeClass("d-none");
+			    	$('#productGroup\\.nhId').selectpicker('val', nhId);
+			    	$('#hhTen').val(hhTen);
+			    	$('#hhDonViTinh').val(hhDonViTinh);
+			    	$('#hhDonGia').val(hhDonGia);
+			    	$('#hhMoTa').text(hhMoTa);
+			    	
+			        $('#mainModalLabel').text(updateTitle);
+			        $('#mainModal').modal('show');
+			    }
+			    
+			    function showDeleteModal(id, ten) {
+			    	$('#objText').text(id + " - " + ten + "?");
+			    	$('#deleteBtn').attr("href", "/product/delete/" + id)
+			    }
+			    
+				document.getElementById('proGroupModal').addEventListener('hide.bs.modal', function () {
+					$('#nhTen').removeClass('is-invalid');
+				})
+			</script>
+	    </div>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head></head>
+	<body>
+		<ul>
+			<li layout:fragment="menuItem(index, labelText, checked)">
+				<div class="dropdown-item">
+					<input class="form-check-input" type="checkbox" th:id="${'cb' + index}" name="menuCb" th:value="${index}" th:checked="${checked}">
+					<label class="form-check-label" th:for="${'cb' + index}" th:text="${labelText}"></label>
+				</div>
+			</li>
+		</ul>
+	</body>
+</html>
